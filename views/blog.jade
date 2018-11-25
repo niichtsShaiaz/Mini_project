@@ -1,0 +1,17 @@
+html
+  head
+    title= title
+  body
+    h1= message
+    form(action="", method="post")
+      .input
+        span.label info: 
+        input(type="text" name="info")
+      .input
+        span.label longtitude: 
+        input(type="number" name="longtitude")
+      .input
+        span.label latitude: 
+        input(type="number" name="latitude")
+      .action
+        input(type="submit" value="Register")

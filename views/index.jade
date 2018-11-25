@@ -1,0 +1,23 @@
+html
+  head
+    title= title
+  body
+    h1= message
+    form(action="", method="post")
+      .input
+        span.label First Name: 
+        input(type="text" name="firstname")
+      .input
+        span.label Last Name: 
+        input(type="text" name="lastname")
+      .input
+        span.label User Name: 
+        input(type="text" name="username")
+      .input
+        span.label Password: 
+        input(type="text" name="password")
+      .input
+        span.label Email: 
+        input(type="text" name="email")
+      .actions
+        input(type="submit" value="Register")
