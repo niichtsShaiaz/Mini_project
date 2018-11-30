@@ -4,6 +4,15 @@ var userFacede = require("../facades/UserFacade");
 
 // Construct a schema, using GraphQL schema language
 var schema = buildSchema(`
+input UserInput {
+    firstName: String!
+    lastName: String!
+      userName: String!
+      password: String!
+      email: String!
+  }
+
+
   type User {
     id: ID
       userName: String
@@ -15,6 +24,11 @@ var schema = buildSchema(`
 
   type Query {
     getUsers: [User]
+    getUser(id: ID!): User
+  }
+
+  type Mutation {
+    createUser(input: UserInput): User
   }
 
 `);
@@ -44,7 +58,21 @@ var root = {
             users.push(new User(allUsers[prop]))
         }
         return users;
-    }
+    },
+    getUser: async function ({id}) {
+        let user = await userFacede.findById(id)
+        if(user == null)
+        {
+            return console.error("hej");
+        }
+        return new User(user);
+      }
+      ,
+    createUser: function ({ input }) {
+       // userFacede.addUser(input.firstName, input.lastName, input.userName, input.password, input.email);
+        userFacede.addUser(input);
+        return new User(input);
+    },
 };
 
 

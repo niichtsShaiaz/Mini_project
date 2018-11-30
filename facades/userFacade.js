@@ -4,8 +4,8 @@ function getAllUsers() {
   return User.find({}).exec();
 }
 
-function addUser(firstName, lastName, userName, password, email) {
-  return new User({ firstName, lastName, userName, password, email }).save().catch(res => false);
+function addUser(input) {
+  return new User(input).save().catch(res => false);
 }
 
 function findByUsername(username) {
