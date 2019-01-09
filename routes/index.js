@@ -38,7 +38,7 @@ router.post('/api/login', async function (req, res, next) {
     //Add position to user
     const pos = await posFacade.findAndUpdatePositionOnUser(userInDB._id, coords.longitude, coords.latitude).catch(res => console.log(res.message));
 
-    res.send(JSON.stringify({ status: "Welcome: " + user.username, error: false, payload: { username: user.username, longitude: coords.longitude, latitude: coords.latitude } }))
+    res.send(JSON.stringify({ status: "Welcome: " + user.userName, error: false, payload: { username: user.userName, longitude: coords.longitude, latitude: coords.latitude } }))
   }
 })
 
@@ -49,10 +49,20 @@ router.get('/', function (req, res) {
   })
 })
 
+router.post('/', async function (req, res, next) {
+  var newUser = req.body;
+  var result = await userFacade.addUser(newUser)
+  if (!result) {
+    res.send(JSON.stringify({ status: "User has not been registered, because the username already exists.", error: true }))
+  } else {
+    res.send(JSON.stringify({ status: "User has been succesfully registered", error: false }))
+  }
+})
+
 router.post('/api/updatePos', async function (req, res, next) {
   const body = req.body;
   console.log(body);
-  const pos = await posFacade.findAndUpdatePositionOnUsername(body.username, body.longitude, body.latitude).catch(res => console.log(res.message));
+  const pos = await posFacade.findAndUpdatePositionOnUsername(body.userName, body.longitude, body.latitude).catch(res => console.log(res.message));
 
   res.send(JSON.stringify({ status: "Welcome: " + body.username, error: false, payload: { username: body.username, longitude: body.longitude, latitude: body.latitude } }))
 })
@@ -90,9 +100,9 @@ router.get('/users/search', async function (req, res, next) {
 });
 
 router.post('/api/nearbyplayers', async function (req, res, next) {
-  const username = req.body.username;
+  const username = req.body.userName;
   const userLoggedIn = await userFacade.findByUsername(username);
-  const position = await posFacade.findPositionForUser(userLoggedIn[0]._id)
+  const position = await posFacade.findPositionForUser(userLoggedIn._id)
   const getPositions = await posFacade.getAllFriends();
   const radiusIn = req.body.radius;
 

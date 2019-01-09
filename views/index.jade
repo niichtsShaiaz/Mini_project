@@ -3,16 +3,16 @@ html
     title= title
   body
     h1= message
-    form(action="", method="post")
+    form(action="/mini/api/register", method="post")
       .input
         span.label First Name: 
-        input(type="text" name="firstname")
+        input(type="text" name="firstName")
       .input
         span.label Last Name: 
-        input(type="text" name="lastname")
+        input(type="text" name="lastName")
       .input
         span.label User Name: 
-        input(type="text" name="username")
+        input(type="text" name="userName")
       .input
         span.label Password: 
         input(type="text" name="password")
