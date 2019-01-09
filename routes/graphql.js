@@ -1,6 +1,6 @@
 var express = require('express');
 var { buildSchema } = require('graphql');
-var userFacede = require("../facades/UserFacade");
+var userFacede = require("../facades/userFacade");
 
 // Construct a schema, using GraphQL schema language
 var schema = buildSchema(`
