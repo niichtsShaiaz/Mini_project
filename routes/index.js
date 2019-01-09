@@ -102,26 +102,40 @@ router.get('/users/search', async function (req, res, next) {
 router.post('/api/nearbyplayers', async function (req, res, next) {
   const username = req.body.userName;
   const userLoggedIn = await userFacade.findByUsername(username);
+  if(userLoggedIn == undefined){
+    res.send(JSON.stringify({status: "invalid username", error: true}))
+  }
+
+
   const position = await posFacade.findPositionForUser(userLoggedIn._id)
+
   const getPositions = await posFacade.getAllFriends();
+
   const radiusIn = req.body.radius;
 
-  const coordinates = [position.loc.coordinates[0], position.loc.coordinates[1]]; //[lon, lat]
+  const coordinates = [position.loc.coordinates[0], position.loc.coordinates[1]]; //player coordinates [lon, lat]
+
+
   const radius = radiusIn * 1000;                           // in meters to km
   const numberOfEdges = 32;                           //optional that defaults to 32
  
   //Make circle around user
   let polygon = circleToPolygon(coordinates, radius, numberOfEdges);
-
+  
   // Validate if Points is in polygon
   const friendsInPolygon = [];
   getPositions.forEach(element => {
-    if(gju.pointInPolygon({ "type":"Point","coordinates":[element.loc.coordinates[0], element.loc.coordinates[1]] },polygon)){
-      friendsInPolygon.push(element)
+      if(gju.pointInPolygon({"type":"Point","coordinates":[element.loc.coordinates[0], element.loc.coordinates[1]] },
+                 //{"type":"Polygon", "coordinates":[[[0,0],[20,0],[20,20],[0,20]]]}))
+                 {"type":"Polygon", "coordinates": polygon.coordinates}))
+
+                 friendsInPolygon.push(element)
     }
-  });
+  );
+
 
   const removeUserFromList = await convertFriends(friendsInPolygon, username);
+
   res.send(JSON.stringify(removeUserFromList));
 })
 

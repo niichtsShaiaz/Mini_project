@@ -27,7 +27,7 @@ function findAndUpdatePositionOnUsername(username, longitude, latitude) {
 }
 
 function getAllFriends() {
-    return Position.find();
+    return Position.find({});
 }
 
 function findUserForPosition(id) {
