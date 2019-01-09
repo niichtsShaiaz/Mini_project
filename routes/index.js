@@ -13,8 +13,8 @@ require('../dbSetup')(require("../settings").TEST_DB_URI);;
 //index
 
 router.post('/api/register', async function (req, res, next) {
-  var body = req.body;
-  var result = await userFacade.addUser(body.firstname, body.lastname, body.username, body.password, body.email)
+  var newUser = req.body;
+  var result = await userFacade.addUser(newUser)
   if (!result) {
     res.send(JSON.stringify({ status: "User has not been registered, because the username already exists.", error: true }))
   } else {
@@ -26,19 +26,20 @@ router.post('/api/login', async function (req, res, next) {
   const user = req.body.user;
   const coords = req.body;
   //Get user validation
-  const userInDB = await userFacade.findByUsername(user.username, next);
-  if (!userInDB.length || userInDB[0].password !== user.password) {
-    res.send(JSON.stringify({ status: "invalid username or password, please try again", error: true }))
+  const userInDB = await userFacade.findByUsername(user.userName);
+  if(userInDB == undefined)
+  {
+    res.send(JSON.stringify({status: "invalid username", error: true}))
+  }
+  else if (userInDB.password != user.password) {
+    res.send(JSON.stringify({ status: "invalid password, please try again", error: true }))
   } else {
-    //Convert array to object from db
-    const userObject = userInDB.reduce((prev, curr) => curr, {});
 
     //Add position to user
-    const pos = await posFacade.findAndUpdatePositionOnUser(userInDB, coords.longitude, coords.latitude).catch(res => console.log(res.message));
+    const pos = await posFacade.findAndUpdatePositionOnUser(userInDB._id, coords.longitude, coords.latitude).catch(res => console.log(res.message));
 
     res.send(JSON.stringify({ status: "Welcome: " + user.username, error: false, payload: { username: user.username, longitude: coords.longitude, latitude: coords.latitude } }))
   }
-  next();
 })
 
 router.get('/', function (req, res) {
