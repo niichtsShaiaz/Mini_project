@@ -49,11 +49,13 @@ describe("Testing the User Facade", function () {
   });
 
   it("Should add Anduin wrynn", async function () {
-    var user = await userFacade.addUser("Anduin", "Wrynn", "aw", "password", "anotherdummy");
+    var addUser = {firstName: "Anduin", lastName: "Wrynn", userName: "aw", password: "password", email: "anotherdummy"};
+    var user = await userFacade.addUser(addUser);
     expect(user).to.not.be.null;
     expect(user.firstName).to.be.equal("Anduin");
     var users = await userFacade.getAllUsers();
     expect(users.length).to.be.equal(3);
   });
 
+  
 })
