@@ -29,6 +29,7 @@ input UserInput {
 
   type Mutation {
     createUser(input: UserInput): User
+    updateUser(id: ID!, input: UserInput): User
   }
 
 `);
@@ -73,6 +74,12 @@ var root = {
         userFacede.addUser(input);
         return new User(input);
     },
+    updateUser: function ({ id, input }) {
+        // userFacede.addUser(input.firstName, input.lastName, input.userName, input.password, input.email);
+        input._id = id;
+         userFacede.updateUser(input)
+         return new User(input);
+     },
 };
 
 
