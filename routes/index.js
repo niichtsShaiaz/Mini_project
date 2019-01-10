@@ -109,6 +109,11 @@ router.post('/api/nearbyplayers', async function (req, res, next) {
 
   const position = await posFacade.findPositionForUser(userLoggedIn._id)
 
+  if(position == null)
+  {
+    res.send(JSON.stringify([]))
+  }
+
   const getPositions = await posFacade.getAllFriends();
 
   const radiusIn = req.body.radius;
@@ -121,7 +126,6 @@ router.post('/api/nearbyplayers', async function (req, res, next) {
  
   //Make circle around user
   let polygon = circleToPolygon(coordinates, radius, numberOfEdges);
-  
   // Validate if Points is in polygon
   const friendsInPolygon = [];
   getPositions.forEach(element => {
@@ -166,7 +170,7 @@ async function convertFriends(res, username) {
   const allFriends = [];
   for (let index = 0; index < res.length; index++) {
     const user = await posFacade.findUserForPosition(res[index]._id);
-    if (user.userName !== username) {
+    if (user != null && user.userName !== username) {
       allFriends.push({ position: res[index].loc.coordinates, user: user.userName });
     }
   }
